@@ -134,5 +134,26 @@ echo To start the bot:
 echo   - Double-click 'run_background.bat' to run in background OR
 echo   - Double-click 'run.bat' for normal mode
 echo.
-echo Press any key to exit...
-pause >nul
+echo.
+echo Would you like to start the bot now?
+set /p start_bot="Start in [B]ackground, [N]ormal mode, or [S]kip? (B/N/S): "
+
+if /i "!start_bot!"=="B" (
+    echo.
+    echo Starting bot in background mode...
+    start run_background.bat
+    exit
+) else if /i "!start_bot!"=="N" (
+    echo.
+    echo Starting bot in normal mode...
+    start run.bat
+    exit
+) else (
+    echo.
+    echo Skipping auto-start.
+    echo You can run the bot anytime by double-clicking:
+    echo   - run_background.bat (background mode)
+    echo   - run.bat (normal mode)
+    echo.
+    pause
+)
