@@ -1,15 +1,32 @@
 @echo off
 color 0A
-title Mira Bot - Wild West Discord Bot Installer
+title Mira Bot - Auto-Installer & Updater
 
 echo ========================================
-echo    MIRA BOT - ONE-CLICK INSTALLER
+echo    MIRA BOT - AUTO INSTALLER/UPDATER
 echo    Wild West Discord Bot Setup
 echo ========================================
 echo.
 
+REM Check if Git is installed
+echo [1/5] Checking Git installation...
+git --version >nul 2>&1
+if errorlevel 1 (
+    echo Git not found. Installing Git...
+    echo Downloading Git installer...
+    powershell -Command "Invoke-WebRequest -Uri 'https://github.com/git-for-windows/git/releases/download/v2.43.0.windows.1/Git-2.43.0-64-bit.exe' -OutFile 'git-installer.exe'"
+    echo Installing Git (this may take a moment)...
+    start /wait git-installer.exe /VERYSILENT /NORESTART
+    del git-installer.exe
+    echo Git installed successfully!
+) else (
+    echo Git is installed!
+)
+
+echo.
+
 REM Check if Python is installed
-echo [1/4] Checking Python installation...
+echo [2/5] Checking Python installation...
 python --version >nul 2>&1
 if errorlevel 1 (
     echo ERROR: Python is not installed!
@@ -24,11 +41,29 @@ if errorlevel 1 (
 echo Python is installed!
 echo.
 
+REM Auto-update from GitHub
+echo [3/5] Checking for updates from GitHub...
+if exist .git (
+    echo Pulling latest updates...
+    git pull origin main
+    if errorlevel 1 (
+        echo Warning: Could not update from GitHub.
+        echo Continuing with existing files...
+    ) else (
+        echo Successfully updated to latest version!
+    )
+) else (
+    echo First time setup - cloning repository...
+    echo Note: Already in repository directory.
+)
+
+echo.
+
 REM Install dependencies
-echo [2/4] Installing required packages...
+echo [4/5] Installing/Updating required packages...
 echo This may take a minute...
 echo.
-pip install -r requirements.txt
+pip install -r requirements.txt --upgrade
 if errorlevel 1 (
     echo ERROR: Failed to install dependencies!
     echo Please check your internet connection and try again.
@@ -37,11 +72,11 @@ if errorlevel 1 (
 )
 
 echo.
-echo Packages installed successfully!
+echo Packages installed/updated successfully!
 echo.
 
 REM Create .env file
-echo [3/4] Setting up configuration...
+echo [5/5] Setting up configuration...
 if exist .env (
     echo .env file already exists.
     set /p overwrite="Do you want to update your Discord token? (Y/N): "
@@ -79,7 +114,6 @@ echo.
 :skip_token
 
 REM Create database
-echo [4/4] Initializing database...
 if not exist mira_bot.db (
     echo Database will be created on first run.
 ) else (
@@ -93,14 +127,12 @@ echo ========================================
 echo.
 echo Your bot is ready to run!
 echo.
-echo To start the bot:
-echo   - Double-click 'run.bat' OR
-echo   - Run 'python main.py' in terminal
+echo IMPORTANT: This script also serves as an AUTO-UPDATER.
+echo Run this file anytime to update to the latest version!
 echo.
-echo The terminal will show:
-echo   - All available commands
-echo   - Real-time bot activity
-echo   - Server connections
+echo To start the bot:
+echo   - Double-click 'run_background.bat' to run in background OR
+echo   - Double-click 'run.bat' for normal mode
 echo.
 echo Press any key to exit...
 pause >nul
