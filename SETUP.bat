@@ -1,4 +1,7 @@
 @echo off
+REM Force window to stay open on any error
+if not "%1"=="NOCATCH" (cmd /c "%~f0" NOCATCH & pause & exit)
+
 setlocal enabledelayedexpansion
 color 0A
 title Mira Bot - Complete Setup (Brand New PC)
