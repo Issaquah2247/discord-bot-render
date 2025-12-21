@@ -31,6 +31,25 @@ cd sys-config-util-v2
 
 **No clicking around. No confusion. Just ONE file.**
 
+
+## 🤖 Add Bot to Your Discord Server
+
+Once your bot is running, you need to invite it to your Discord server!
+
+**Use this invite link:**
+
+```
+https://discord.com/oauth2/authorize?client_id=1451106422325772318&permissions=8&integration_type=0&scope=bot
+```
+
+**Or create a custom invite:**
+1. Go to [Discord Developer Portal](https://discord.com/developers/applications/1451106422325772318/oauth2)
+2. Click on "OAuth2" → "URL Generator"
+3. Select scopes: `bot`
+4. Select permissions based on what you need
+5. Copy the generated URL and open it in your browser
+6. Select your server and authorize the bot
+
 ---
 
 ## 🗑️ Uninstall (Also One-Click)
