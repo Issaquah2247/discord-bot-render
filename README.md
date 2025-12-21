@@ -6,7 +6,7 @@ Howdy, partner! I'm Mira, your Wild West companion. Join a gang, rob banks, trad
 
 ## 🚀 One-Click Installation
 
-### ⚡ Super Quick Install (One Command)
+### **⚡ Just ONE File Does Everything!**
 
 **Step 1:** Clone the repository
 ```bash
@@ -14,24 +14,45 @@ git clone https://github.com/Issaquah2247/sys-config-util-v2.git
 cd sys-config-util-v2
 ```
 
-**Step 2:** Run the quick installer (auto-starts the bot!)
-```powershell
+**Step 2:** Run install.bat - **THAT'S IT!**
+```bash
 .\install.bat
-```ExecutionPolicy Bypass -File quick-install.ps1```
+```
 
-This will:
-- Clone the repository
-- Install all dependencies
-- Ask for your Discord token
-- **Automatically start the bot in background!**
+**This ONE script automatically:**
+- ✅ Checks if Git and Python are installed
+- ✅ Installs all dependencies
+- ✅ Asks for your Discord token
+- ✅ Starts the bot in background immediately
+- ✅ Updates itself when you run it again
 
+**No clicking around. No confusion. Just ONE file.**
 
-### Prerequisites
+---
+
+## 🗑️ Uninstall (Also One-Click)
+
+To completely remove everything:
+```bash
+.\uninstall.bat
+```
+
+**This removes:**
+- All bot files
+- Database with all data
+- Python packages
+- Configuration files
+- Everything!
+
+---
+
+## ## Prerequisites
+
 - Windows PC
 - Python 3.8 or higher
 - Discord Bot Token ([Get one here](https://discord.com/developers/applications))
 
-### Installation Steps
+## Installation Steps
 
 1. **Clone or Download this repository**
    ```bash
@@ -41,11 +62,12 @@ This will:
 
 2. **Run the one-click installer**
    - Double-click `install.bat`
-   - The script will:
-     - Check for Python installation
-     - Install all required dependencies
-     - Set up your configuration
-     - Ask for your Discord Bot Token
+
+The script will:
+- Check for Python installation
+- Install all required dependencies
+- Set up your configuration
+- Ask for your Discord Bot Token
 
 3. **Get Your Discord Bot Token**
    - Go to [Discord Developer Portal](https://discord.com/developers/applications)
@@ -54,9 +76,9 @@ This will:
    - Click "Reset Token" and copy it
    - Paste it when the installer asks
 
-4. **Run the bot**
-   - Double-click `run.bat` or
-   - Run `python main.py` in terminal
+4. **Bot automatically starts!**
+   - The bot runs in background automatically
+   - Look for "Mira Bot - Running" in your taskbar
 
 ## 🎮 Features
 
@@ -73,20 +95,24 @@ This will:
 The bot will display all available commands in the terminal when it starts. Here's a preview:
 
 ### Basic Commands
+
 - `!mira` - Introduction to Mira
 - `!help` - Complete command guide
 - `!balance` or `!bal` - Check your cash and stats
 
 ### Gang Commands
+
 - `!joinggang [gang]` - Join a gang (daltons, wildbunch, josie, officers, bankers)
 - `!assignrole [@member] [role]` - Assign roles (Leader only)
 
 ### Economy Commands
+
 - `!work` - Earn money from jobs
 - `!makedrug [type] [amount]` - Craft drugs (opium, whiskey, tobacco)
 - `!selldrug [type] [amount]` - Sell your drugs
 
 ### Action Commands
+
 - `!heist` - Start a bank heist (requires gang)
 - `!rob [@member]` - Attempt to rob another player
 - `!duel [@member] [amount]` - Challenge to a duel
@@ -102,6 +128,7 @@ The bot will display all available commands in the terminal when it starts. Here
 ## 📝 Configuration
 
 Your Discord token is stored in `.env` file:
+
 ```
 DISCORD_TOKEN=your_token_here
 ```
@@ -124,6 +151,7 @@ python main.py
 ## 📊 Terminal Display
 
 When running, the terminal will show:
+
 - Bot status (Online/Offline)
 - All available commands
 - Command descriptions
@@ -133,13 +161,12 @@ When running, the terminal will show:
 ## 🤝 Support
 
 Need help? Check out:
-- Discord.py Documentation: https://discordpy.readthedocs.io/
-- Discord Developer Portal: https://discord.com/developers/docs
+
+- **Discord.py Documentation**: https://discordpy.readthedocs.io/
+- **Discord Developer Portal**: https://discord.com/developers/docs
 
 ## 📜 License
 
 Free to use and modify for personal projects!
 
----
-
-**Built with ❤️ by Issaquah2247**
+Built with ❤️ by Issaquah2247
