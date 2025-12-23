@@ -20,7 +20,7 @@ echo.
 
 REM Check if Git is installed
 echo [1/6] Checking Git installation...
-git --version >nul 2>nul
+git --version >nul 2>&1
 if errorlevel 1 (
     echo Git not found. Installing Git...
     echo Downloading Git installer...
@@ -36,7 +36,7 @@ echo.
 
 REM Check if Python is installed
 echo [2/6] Checking Python installation...
-python --version >nul 2>nul
+python --version >nul 2>&1
 if errorlevel 1 (
     echo ERROR: Python is not installed!
     echo Please install Python 3.8 or higher from:
