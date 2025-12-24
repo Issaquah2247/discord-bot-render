@@ -28,6 +28,11 @@ def init_db():
     c.execute('''CREATE TABLE IF NOT EXISTS drugs
                  (user_id INTEGER, drug_type TEXT, quantity INTEGER,
                   PRIMARY KEY (user_id, drug_type))''')
+        c.execute('''CREATE TABLE IF NOT EXISTS properties
+                 (user_id INTEGER, property_type TEXT, property_name TEXT,
+                  PRIMARY KEY (user_id, property_type))''')
+    c.execute('''CREATE TABLE IF NOT EXISTS horses
+                 (user_id INTEGER PRIMARY KEY, horse_type TEXT, horse_name TEXT)''')
     conn.commit()
     conn.close()
 
@@ -47,6 +52,24 @@ DRUGS = {
     "opium": {"name": "Opium", "base_price": 50},
     "whiskey": {"name": "Whiskey", "base_price": 30},
     "tobacco": {"name": "Tobacco", "base_price": 20}
+}
+
+# Wild West Houses - Period-accurate frontier dwellings
+HOUSES = {
+    "tent": {"name": "Canvas Tent", "price": 100, "emoji": "⛺", "description": "Basic shelter from the elements"},
+    "cabin": {"name": "Wooden Cabin", "price": 500, "emoji": "🏚️", "description": "Small pioneer homestead"},
+    "ranch": {"name": "Ranch House", "price": 1500, "emoji": "🏡", "description": "Sturdy frontier ranch"},
+    "saloon": {"name": "Saloon", "price": 3000, "emoji": "🍺", "description": "Profitable business establishment"},
+    "manor": {"name": "Victorian Manor", "price": 7500, "emoji": "🏰", "description": "Luxurious estate for wealthy frontier folk"}
+}
+
+# Wild West Horses - Period-accurate breeds
+HORSES = {
+    "mare": {"name": "Old Mare", "price": 150, "emoji": "🐴", "speed": 1, "description": "Slow but dependable work horse"},
+    "mustang": {"name": "Wild Mustang", "price": 400, "emoji": "🏇", "speed": 3, "description": "Fast and untamed"},
+    "thoroughbred": {"name": "Thoroughbred", "price": 800, "emoji": "🐎", "speed": 4, "description": "Racing champion"},
+    "warhorse": {"name": "War Horse", "price": 1200, "emoji": "⚔️", "speed": 3, "description": "Battle-tested and strong"},
+    "arabian": {"name": "Arabian", "price": 2500, "emoji": "✨", "speed": 5, "description": "Elite speed and endurance"}
 }
 
 HEIST_QUESTIONS = [
@@ -104,6 +127,12 @@ async def on_ready():
     print("  !heist - Start a bank heist (requires gang)")
     print("  !rob [@member] - Attempt to rob another player")
     print("  !duel [@member] [amount] - Challenge to a duel")
+        print("\n🏠 Property Commands:")
+    print("  !buyhouse [type] - Purchase frontier property")
+    print("  !buyhorse [type] - Buy a Wild West horse")
+    print("  !property - View your properties and horses")
+    print("  Houses: tent, cabin, ranch, saloon, manor")
+    print("  Horses: mare, mustang, thoroughbred, warhorse, arabian")
     print("  !arrest [@member] - Arrest outlaws (Officers only)")
     print("\n💎 Admin Commands (Owner Only):")
     print("  !addmoney [@member] [amount] - Add money to a user")
@@ -375,6 +404,106 @@ async def help(ctx):
 @bot.hybrid_command(name='addmoney')
 async def add_money_admin(ctx, member: discord.Member = None, amount: int = None):
     """Admin only command to add money to users"""
+    
+# Property & Horse Commands
+@bot.hybrid_command(name='buyhouse')
+async def buy_house(ctx, house_type: str):
+    house_type = house_type.lower()
+    if house_type not in HOUSES:
+        await ctx.send(f"❌ Invalid! Choose: {', '.join(HOUSES.keys())}")
+        return
+    
+    house = HOUSES[house_type]
+    user = get_user(ctx.author.id)
+    
+    if user[1] < house['price']:
+        await ctx.send(f"❌ Need ${house['price']}! You have ${user[1]}")
+        return
+    
+    conn = sqlite3.connect('mira_bot.db')
+    c = conn.cursor()
+    existing = c.execute("SELECT * FROM properties WHERE user_id=? AND property_type=?", 
+                         (ctx.author.id, house_type)).fetchone()
+    
+    if existing:
+        await ctx.send(f"❌ You already own a {house['name']}!")
+        conn.close()
+        return
+    
+    update_money(ctx.author.id, -house['price'])
+    c.execute("INSERT INTO properties VALUES (?, ?, ?)", 
+              (ctx.author.id, house_type, house['name']))
+    conn.commit()
+    conn.close()
+    
+    await ctx.send(f"{house['emoji']} Purchased **{house['name']}** for ${house['price']}!\n{house['description']}")
+
+@bot.hybrid_command(name='buyhorse')
+async def buy_horse(ctx, horse_type: str):
+    horse_type = horse_type.lower()
+    if horse_type not in HORSES:
+        await ctx.send(f"❌ Invalid! Choose: {', '.join(HORSES.keys())}")
+        return
+    
+    horse = HORSES[horse_type]
+    user = get_user(ctx.author.id)
+    
+    if user[1] < horse['price']:
+        await ctx.send(f"❌ Need ${horse['price']}! You have ${user[1]}")
+        return
+    
+    conn = sqlite3.connect('mira_bot.db')
+    c = conn.cursor()
+    existing = c.execute("SELECT * FROM horses WHERE user_id=?", (ctx.author.id,)).fetchone()
+    
+    if existing:
+        await ctx.send(f"❌ You already own a horse! Sell it first with !sellhorse")
+        conn.close()
+        return
+    
+    update_money(ctx.author.id, -horse['price'])
+    c.execute("INSERT INTO horses VALUES (?, ?, ?)", 
+              (ctx.author.id, horse_type, horse['name']))
+    conn.commit()
+    conn.close()
+    
+    await ctx.send(f"{horse['emoji']} Purchased **{horse['name']}** for ${horse['price']}!\nSpeed: {'⭐' * horse['speed']}\n{horse['description']}")
+
+@bot.hybrid_command(name='property')
+async def view_property(ctx, member: discord.Member = None):
+    member = member or ctx.author
+    
+    conn = sqlite3.connect('mira_bot.db')
+    c = conn.cursor()
+    
+    # Get houses
+    houses = c.execute("SELECT property_type, property_name FROM properties WHERE user_id=?", 
+                       (member.id,)).fetchall()
+    
+    # Get horse
+    horse = c.execute("SELECT horse_type, horse_name FROM horses WHERE user_id=?", 
+                      (member.id,)).fetchone()
+    conn.close()
+    
+    embed = discord.Embed(title=f"🏘️ {member.display_name}'s Property", color=0x8B4513)
+    
+    if houses:
+        house_list = "\n".join([f"{HOUSES[h[0]]['emoji']} **{h[1]}** ({HOUSES[h[0]]['description']})" 
+                                for h in houses])
+        embed.add_field(name="🏠 Houses", value=house_list, inline=False)
+    else:
+        embed.add_field(name="🏠 Houses", value="No properties owned", inline=False)
+    
+    if horse:
+        horse_data = HORSES[horse[0]]
+        embed.add_field(name="🐴 Horse", 
+                       value=f"{horse_data['emoji']} **{horse[1]}**\nSpeed: {'⭐' * horse_data['speed']}\n{horse_data['description']}", 
+                       inline=False)
+    else:
+        embed.add_field(name="🐴 Horse", value="No horse owned", inline=False)
+    
+    await ctx.send(embed=embed)
+
     # Check if user is the bot owner
     if ctx.author.id != 747474910850318437:
         await ctx.send("❌ You don't have permission to use this command!")
