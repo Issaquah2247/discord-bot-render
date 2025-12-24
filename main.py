@@ -4,7 +4,7 @@
 # every day is a new adventure. Will you be an outlaw or keep the peace? The choice is yours!
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, app_commands
 import os
 import random
 import asyncio
@@ -108,9 +108,13 @@ async def on_ready():
     print("  !addmoney [@member] [amount] - Add money to a user")
     print("  !addmoney [amount] - Add money to yourself")
     print("\n" + "="*60)
+        
+    # Sync slash commands
+    await bot.tree.sync()
+    print("🔄 Slash commands synced!")
     print("✅ BOT IS ONLINE AND READY!".center(60))
     print("="*60 + "\n")
-@bot.command(name='mira')
+@commands.hybrid_command(name='mira')
 async def mira_intro(ctx):
     embed = discord.Embed(title="🤠 Howdy! I'm Mira!", 
         description="Short gal with curly brown hair running the Wild West!\n\n"
@@ -118,7 +122,7 @@ async def mira_intro(ctx):
         color=0xD4AF37)
     await ctx.send(embed=embed)
 
-@bot.command(name='balance', aliases=['bal'])
+@commands.hybrid_command(name='balance', aliases=['bal'])
 async def balance(ctx, member: discord.Member = None):
     member = member or ctx.author
     user = get_user(member.id)
@@ -127,7 +131,7 @@ async def balance(ctx, member: discord.Member = None):
         color=0xFFD700)
     await ctx.send(embed=embed)
 
-@bot.command(name='joinggang')
+@commands.hybrid_command(name='joinggang')
 async def join_gang(ctx, gang_name: str):
     gang_name = gang_name.lower()
     if gang_name not in GANGS:
@@ -140,14 +144,14 @@ async def join_gang(ctx, gang_name: str):
     conn.close()
     await ctx.send(f"{GANGS[gang_name]['emoji']} Joined **{GANGS[gang_name]['name']}**!")
 
-@bot.command(name='work')
+@commands.hybrid_command(name='work')
 async def work(ctx):
     jobs = [("mined gold", random.randint(20, 50)), ("herded cattle", random.randint(15, 40))]
     job, pay = random.choice(jobs)
     update_money(ctx.author.id, pay)
     await ctx.send(f"💼 {job} → **${pay}**")
 
-@bot.command(name='makedrug')
+@commands.hybrid_command(name='makedrug')
 async def make_drug(ctx, drug_type: str, amount: int = 1):
     drug_type = drug_type.lower()
     if drug_type not in DRUGS:
@@ -167,7 +171,7 @@ async def make_drug(ctx, drug_type: str, amount: int = 1):
     conn.close()
     await ctx.send(f"🧪 Made {amount} {DRUGS[drug_type]['name']}!")
 
-@bot.command(name='selldrug')
+@commands.hybrid_command(name='selldrug')
 async def sell_drug(ctx, drug_type: str, amount: int = 1):
     drug_type = drug_type.lower()
     if drug_type not in DRUGS:
@@ -186,7 +190,7 @@ async def sell_drug(ctx, drug_type: str, amount: int = 1):
     update_money(ctx.author.id, price)
     await ctx.send(f"💰 Sold for **${price}**!")
 
-@bot.command(name='heist')
+@commands.hybrid_command(name='heist')
 @commands.cooldown(1, 300, commands.BucketType.guild)
 async def heist(ctx):
     user = get_user(ctx.author.id)
@@ -227,7 +231,7 @@ async def heist(ctx):
     else:
         await ctx.send(f"❌ FAILED! {correct}/3")
 
-@bot.command(name='rob')
+@commands.hybrid_command(name='rob')
 async def rob(ctx, member: discord.Member):
     if member.bot or member == ctx.author:
         return
@@ -243,7 +247,7 @@ async def rob(ctx, member: discord.Member):
     else:
         await ctx.send("❌ Failed!")
 
-@bot.command(name='duel')
+@commands.hybrid_command(name='duel')
 async def duel(ctx, member: discord.Member, amount: int):
     if member.bot or member == ctx.author:
         return
@@ -268,7 +272,7 @@ async def duel(ctx, member: discord.Member, amount: int):
     update_money(loser.id, -amount)
     await ctx.send(f"🎯 {winner.mention} won ${amount}!")
 
-@bot.command(name='arrest')
+@commands.hybrid_command(name='arrest')
 @commands.has_permissions(moderate_members=True)
 async def arrest(ctx, member: discord.Member):
     user = get_user(ctx.author.id)
@@ -282,7 +286,7 @@ async def arrest(ctx, member: discord.Member):
     except:
         await ctx.send("❌ Can't arrest!")
 
-@bot.command(name='assignrole')
+@commands.hybrid_command(name='assignrole')
 async def assign_role(ctx, member: discord.Member, role: str):
     user = get_user(ctx.author.id)
     if user[3] != 'Leader':
@@ -298,7 +302,7 @@ async def assign_role(ctx, member: discord.Member, role: str):
     conn.close()
     await ctx.send(f"✅ {member.mention} → **{role}**!")
 
-@bot.command()
+@commands.hybrid_command()
 async def help(ctx):
     """Display all available commands and bot information"""
     embed = discord.Embed(
@@ -367,7 +371,7 @@ async def help(ctx):
 
 
 # Admin command - Only for owner (Your ID: 747474910850318437)
-@bot.command(name='addmoney')
+@commands.hybrid_command(name='addmoney')
 async def add_money_admin(ctx, member: discord.Member = None, amount: int = None):
     """Admin only command to add money to users"""
     # Check if user is the bot owner
