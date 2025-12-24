@@ -19,7 +19,7 @@ intents.guilds = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 def init_db():
-    conn = sqlite3.connect('')
+    conn = sqlite3.connect('mira_bot.db')
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS users
                  (user_id INTEGER PRIMARY KEY, money INTEGER DEFAULT 100,
@@ -57,7 +57,7 @@ HEIST_QUESTIONS = [
 ]
 
 def get_user(user_id):
-    conn = sqlite3.connect('')
+    conn = sqlite3.connect('mira_bot.db')
     c = conn.cursor()
     c.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
     user = c.fetchone()
@@ -69,7 +69,7 @@ def get_user(user_id):
     return user
 
 def update_money(user_id, amount):
-    conn = sqlite3.connect('')
+    conn = sqlite3.connect('mira_bot.db')
     c = conn.cursor()
     c.execute("UPDATE users SET money = money + ? WHERE user_id = ?", (amount, user_id))
     conn.commit()
@@ -133,7 +133,7 @@ async def join_gang(ctx, gang_name: str):
     if gang_name not in GANGS:
         await ctx.send(f"❌ Invalid! Choose: {', '.join(GANGS.keys())}")
         return
-    conn = sqlite3.connect('')
+    conn = sqlite3.connect('mira_bot.db')
     c = conn.cursor()
     c.execute("UPDATE users SET gang = ? WHERE user_id = ?", (gang_name, ctx.author.id))
     conn.commit()
@@ -159,7 +159,7 @@ async def make_drug(ctx, drug_type: str, amount: int = 1):
         await ctx.send(f"❌ Need ${cost}!")
         return
     update_money(ctx.author.id, -cost)
-    conn = sqlite3.connect('')
+    conn = sqlite3.connect('mira_bot.db')
     c = conn.cursor()
     c.execute("INSERT INTO drugs VALUES (?, ?, ?) ON CONFLICT(user_id, drug_type) DO UPDATE SET quantity = quantity + ?",
               (ctx.author.id, drug_type, amount, amount))
@@ -172,7 +172,7 @@ async def sell_drug(ctx, drug_type: str, amount: int = 1):
     drug_type = drug_type.lower()
     if drug_type not in DRUGS:
         return
-    conn = sqlite3.connect('')
+    conn = sqlite3.connect('mira_bot.db')
     c = conn.cursor()
     result = c.execute("SELECT quantity FROM drugs WHERE user_id=? AND drug_type=?", (ctx.author.id, drug_type)).fetchone()
     if not result or result[0] < amount:
@@ -291,7 +291,7 @@ async def assign_role(ctx, member: discord.Member, role: str):
     if role not in ROLES:
         await ctx.send(f"❌ Choose: {', '.join(ROLES)}")
         return
-    conn = sqlite3.connect('')
+    conn = sqlite3.connect('mira_bot.db')
     c = conn.cursor()
     c.execute("UPDATE users SET role = ? WHERE user_id = ?", (role, member.id))
     conn.commit()
