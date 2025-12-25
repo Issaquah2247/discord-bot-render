@@ -134,7 +134,7 @@ async def on_ready():
 print("  Houses: tent, cabin, ranch, saloon, manor")
     print(" Horses: mare, mustang, thoroughbred, warhorse, arabian")
 print("  !arrest [@member] - Arrest outlaws (Officers only)")
-    t("\n💎 Admin Commands (Owner Only):")
+    print("\n💎 Admin Commands (Owner Only):")
 print("  !addmoney [@member] [amount] - Add money to a user")
     print(" !addmoney [amount] - Add money to yourself")
 print("\n" + "="*60)
@@ -401,11 +401,6 @@ async def help(ctx):
 
 
 # Admin command - Only for owner (Your ID: 747474910850318437)
-@bot.hybrid_command(name='addmoney')
-async def add_money_admin(ctx, member: discord.Member = None, amount: int = None):
-    """Admin only command to add money to users"""
-    
-# Property & Horse Commands
 @bot.hybrid_command(name='buyhouse')
 async def buy_house(ctx, house_type: str):
     house_type = house_type.lower()
@@ -503,7 +498,11 @@ async def view_property(ctx, member: discord.Member = None):
         embed.add_field(name="🐴 Horse", value="No horse owned", inline=False)
     
     await ctx.send(embed=embed)
-
+# Admin command - Only for owner (Your ID: 747474910850318437)
+@bot.hybrid_command(name='addmoney')
+async def add_money_admin(ctx, member: discord.Member = None, amount: int = None):
+    """Admin only command to add money to users"""
+   
     # Check if user is the bot owner
     if ctx.author.id != 747474910850318437:
         await ctx.send("❌ You don't have permission to use this command!")
