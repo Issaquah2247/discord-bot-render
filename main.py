@@ -132,7 +132,7 @@ async def on_ready():
     print("  !buyhorse [type] - Buy a Wild West horse")
     print("  !property - View your properties and horses")
 print("  Houses: tent, cabin, ranch, saloon, manor")
-    print(" Horses: mare, mustang, thoroughbred, warhorse, arabian")
+print(" Horses: mare, mustang, thoroughbred, warhorse, arabian")
 print("  !arrest [@member] - Arrest outlaws (Officers only)")
     print("\n💎 Admin Commands (Owner Only):")
 print("  !addmoney [@member] [amount] - Add money to a user")
