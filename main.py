@@ -134,9 +134,9 @@ async def on_ready():
 print("  Houses: tent, cabin, ranch, saloon, manor")
 print(" Horses: mare, mustang, thoroughbred, warhorse, arabian")
 print("  !arrest [@member] - Arrest outlaws (Officers only)")
-    print("\n💎 Admin Commands (Owner Only):")
+print("\n💎 Admin Commands (Owner Only):")
 print("  !addmoney [@member] [amount] - Add money to a user")
-    print(" !addmoney [amount] - Add money to yourself")
+print(" !addmoney [amount] - Add money to yourself")
 print("\n" + "="*60)
         
     # Sync slash commands
