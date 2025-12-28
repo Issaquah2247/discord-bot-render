@@ -3,6 +3,7 @@ l# Mira Bot - Wild West Discord Bot
 # and build your fortune in the frontier. With gangs like the Daltons, Wild Bunch, and Josie Gang,
 # every day is a new adventure. Will you be an outlaw or keep the peace? The choice is yours!
 
+# Trigger rebuild
 import discord
 from discord.ext import commands
 from discord import app_commands
