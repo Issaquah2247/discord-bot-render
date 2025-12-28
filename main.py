@@ -1,3 +1,4 @@
+144
 l# Mira Bot - Wild West Discord Bot 
 # Howdy, partner! I'm Mira, your Wild West companion. Join a gang, rob banks, trade contraband,
 # and build your fortune in the frontier. With gangs like the Daltons, Wild Bunch, and Josie Gang,
@@ -58,6 +59,7 @@ DRUGS = {
 # Wild West Houses - Period-accurate frontier dwellings
 HOUSES = {
     "tent": {"name": "Canvas Tent", "price": 100, "emoji": "⛺", "description": "Basic shelter from the elements"},
+144
     "cabin": {"name": "Wooden Cabin", "price": 500, "emoji": "🏚️", "description": "Small pioneer homestead"},
     "ranch": {"name": "Ranch House", "price": 1500, "emoji": "🏡", "description": "Sturdy frontier ranch"},
     "saloon": {"name": "Saloon", "price": 3000, "emoji": "🍺", "description": "Profitable business establishment"},
@@ -145,7 +147,7 @@ print("\n" + "="*60)
     print("🔄 Slash commands synced!")
     print("✅ BOT IS ONLINE AND READY!".center(60))
     print("="*60 + "\n")
-.hybrid_command(name='mira')
+@bot.hybrid_command(name='mira')
 async def mira_intro(ctx):
     embed = discord.Embed(title="🤠 Howdy! I'm Mira!", 
         description="Short gal with curly brown hair running the Wild West!\n\n"
